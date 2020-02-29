@@ -9,26 +9,27 @@ module.exports = {
       // var dataToGet = models.messages.get();
       // console.log('message data here -->', dataToGet); // returns undefined 
       // res.send(dataToGet);
-      models.messages.get(function(err, result) {
+      models.messages.get(function(err, results) {
         if (err) {
           console.log('Error getting message -->', err);
         } else {
           // var response = {result: result};
           // console.log('this is the get response--->', response); // {result: [] } --> means get request going thru, but no database info passed in!
           // console.log('this is the response--->', result) //array with results from db
-          res.json(result);
+          res.json(results);
         }
       });
     }, // a function which handles a get request for all messages
     
     post: function (req, res) {
       console.log('reaching the post request in controller');
-      var body = JSON.stringify(body);
-      models.messages.post(body, function(err) {
+      console.log('this is the req.body for messages.post', req.body);
+      var body = req.body; //giving object with keys 
+      models.messages.post(body, function(err, results) {
         if (err) {
           console.log('Error posting message -->', err);
         } else {
-          res.end(result);
+          res.end(results);
         }
       });
 
@@ -38,23 +39,23 @@ module.exports = {
   users: {
     // Ditto as above
     get: function (req, res) {
-      models.users.get(function(err, result) {
+      models.users.get(function(err, results) {
         if (err) {
           console.log('Error getting user -->', err);
         } else {
-          res.writeHead(200, headers);
-          res.end(result);
+          res.end(results);
         }
       });
     },
     post: function (req, res) {
-      var body = JSON.stringify(req.body);
-      models.users.post(body, function(err) {
+      console.log('reaching the users post request in controller');
+      var usernameData = req.body;
+      models.users.post(usernameData, function(err, results) {
         if (err) {
           console.log('Error posting username -->', err);
         } else {
-          res.writeHead(201, headers);
-          res.end('201');
+          results = JSON.stringify(results);
+          res.end(results);
         }
       });
     }

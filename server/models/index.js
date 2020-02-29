@@ -13,9 +13,13 @@ module.exports = {
       });
     }, // a function which produces all the messages
     post: function (data, callback) {
-      console.log('data is here -->', data);
-      var postQuery = 'INSERT INTO messages (messageText, roomID, userID) VALUES ("' + data.messageText + '", (SELECT id FROM rooms WHERE roomname = "' + data.roomname + '"), (SELECT id FROM usernames WHERE username ="' + data.username + '"))';
-      db.query(postQuery, function (err, results) {
+      console.log('message.post data is here -->', data); // should be an object 
+      var dataUserID = 'SELECT usernames.id FROM usernames WHERE username = ' + data.username + ';';
+      var dataRoomID = 'SELECT rooms.id FROM rooms WHERE roomname = ' + data.roomname + ';';
+      var postQuery = 'INSERT INTO messages (messageText, roomID, userID) VALUES ?;';
+      var params = [data.message, dataRoomID, dataUserID];
+      // var postQuery = `INSERT INTO messages (messageText, roomID, userID) VALUES ( ${data.message}, (SELECT id FROM rooms WHERE roomname = ${data.roomname}), (SELECT id FROM usernames WHERE username = ${data.username}));`;
+      db.query(postQuery, [params], function (err, results) {
         console.log('this is the posted message in models.messages.post', results);
         callback(err, results);
       });
@@ -34,13 +38,10 @@ module.exports = {
       });
     },
     post: function (usernameData, callback) {
-      var userQuery = 'INSERT INTO usernames (username) VALUES (" ' + usernameData.username + '")';
-      db.query('', function(err, results) {
-        if (err) {
-          console.log('error- cannot post user into database');
-        } else {
-          callback(results);
-        }
+      console.log("we are in post");
+      var userQuery = 'INSERT INTO usernames (username) VALUES ("' + usernameData.username + '")';
+      db.query(userQuery, usernameData, function(err, results) {
+        callback(err, results);
       });
     }
   }
