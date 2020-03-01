@@ -22,13 +22,17 @@ module.exports = {
     }, // a function which handles a get request for all messages
     
     post: function (req, res) {
-      console.log('reaching the post request in controller');
+      console.log('reaching the mesages.post request in controller');
       console.log('this is the req.body for messages.post', req.body);
       var body = req.body; //giving object with keys 
+      var params = [req.body.message, req.body.username, req.body.roomname];
       models.messages.post(body, function(err, results) {
         if (err) {
           console.log('Error posting message -->', err);
         } else {
+          console.log('Message was posted!');
+          results = JSON.stringify(results);
+          console.log('results is here--->', results);
           res.end(results);
         }
       });

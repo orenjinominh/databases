@@ -7,6 +7,7 @@ module.exports = {
     get: function (callback) {
       let getQuery = 'SELECT * FROM messages';
       // 'SELECT messages.id, messages.messageText, rooms.roomname, usernames.username FROM messages INNER JOIN rooms ON (messages.roomID = rooms.id) INNER JOIN usernames ON (messages.userID = usernames.id);';
+      
       db.query(getQuery, function(err, results) {
         console.log('this is the result in models.messages.get', results);
         callback(err, results);
@@ -14,13 +15,17 @@ module.exports = {
     }, // a function which produces all the messages
     post: function (data, callback) {
       console.log('message.post data is here -->', data); // should be an object 
-      var dataUserID = 'SELECT usernames.id FROM usernames WHERE username = ' + data.username + ';';
-      var dataRoomID = 'SELECT rooms.id FROM rooms WHERE roomname = ' + data.roomname + ';';
-      var postQuery = 'INSERT INTO messages (messageText, roomID, userID) VALUES ?;';
-      var params = [data.message, dataRoomID, dataUserID];
+
+      var params = [];
+      params[0] = data.objectId;
+      params[1] = data.message;
+      params[2] = data.username;
+      params[3] = data.roomname;
+      
+      var postQuery = 'INSERT INTO messages (id, messageText, userID, roomname) VALUES (?, ?, (SELECT id FROM usernames WHERE username = ? limit 1), ?)';
       // var postQuery = `INSERT INTO messages (messageText, roomID, userID) VALUES ( ${data.message}, (SELECT id FROM rooms WHERE roomname = ${data.roomname}), (SELECT id FROM usernames WHERE username = ${data.username}));`;
-      db.query(postQuery, [params], function (err, results) {
-        console.log('this is the posted message in models.messages.post', results);
+      db.query(postQuery, params, function (err, results) {
+        console.log('this is the posted message in models.messages.post--->', results);
         callback(err, results);
       });
     } // a function which can be used to insert a message into the database
@@ -33,14 +38,16 @@ module.exports = {
         if (err) {
           console.log('error- cannot retrieve users');
         } else {
-          callback(null, JSON.stringify(results));
+          callback(err, JSON.stringify(results));
         }
       });
     },
     post: function (usernameData, callback) {
-      console.log("we are in post");
-      var userQuery = 'INSERT INTO usernames (username) VALUES ("' + usernameData.username + '")';
-      db.query(userQuery, usernameData, function(err, results) {
+      console.log("we are in users.post");
+      var username = usernameData.username; //  username =  \'Valjean\'
+      console.log('username body is here --->', username);
+      var userQuery = "INSERT INTO usernames (username) VALUES ('" + username + "');";
+      db.query(userQuery, username, function(err, results) {
         callback(err, results);
       });
     }
