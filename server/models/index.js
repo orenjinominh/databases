@@ -1,5 +1,63 @@
-var db = require('../db/index.js');
+// var db = require('../db/index.js');
+// var promise = require('bluebird');
 
+// module.exports = {
+//   messages: {
+//     get: function(callback) {
+//       console.log('Hit models.messages.get!');
+//       console.log('the messages table is here--->', db.Message);
+//       db.Message.findAll({
+//         include: [db.User]
+//       })
+//       .then(function(err,results) {
+//         callback(err,JSON.stringify(results));
+//       });
+//     },
+//     post: function(data,callback) {
+//       console.log('posting data pre-parse is here--->', data); 
+//       data.JSON.parse(data);
+
+//       db.User.findOne({where: {username: data.username}})
+//         .then(function(userResult) {
+//           var params = {
+//             messageText: data.message,
+//             roomname: data.roomname,
+//             usernameId: userResult.id
+//           };
+//           db.Message.create(params);
+//         })
+//         .then(function(err) {
+//           console.log('posting message was good?');
+//           callback(err, results);
+//         });
+//     }
+//   },
+
+//   users: {
+//     get: function(callback) {
+//       db.User.findAll({
+//         attributes: ['username']
+//       })
+//       .then(function(err, result) {
+//         callback(err, result);
+//       })
+//     },
+//     post: function(userData,callback) {
+//       console.log('userdata is here--->', userData);
+//       db.User.findOrCreate({
+//         where: {username: userData}
+//       })
+//       .spread(function(user))
+//       .then(function(err, results) {
+//         callback(err, results);
+//       });
+//     }
+//   }
+
+// };
+
+
+/* PRE-ORM-REFACTOR CODE
 module.exports = {
   messages: {
     get: function (callback) {
@@ -44,4 +102,5 @@ module.exports = {
     }
   }
 };
+*/
 
